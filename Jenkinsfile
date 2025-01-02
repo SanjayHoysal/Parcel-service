@@ -19,6 +19,7 @@ pipeline {
             steps {
                 echo 'Setting up Java 17...'
                 sh 'sudo apt update -y'
+                sh 'sudo apt install -y openjdk-17-jdk'
             }
         }
 
