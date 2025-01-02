@@ -53,7 +53,7 @@ pipeline {
                 // Display the IP address and access URL of the application
                 script {
                     def ipAddress = sh(script: "hostname -I | awk '{print \$1}'", returnStdout: true).trim()
-                    echo "The application is running and accessible at: http://${ipAddress}:8080"
+                    echo "The application is running and accessible at: http://${ipAddress}:8081"
                 }
             }
         }
