@@ -18,7 +18,7 @@ pipeline {
         stage('Set up Java 17') {
             steps {
                 echo 'Setting up Java 17...'
-                sh 'sudo apt update -y'
+                sh 'sudo apt update'
                 sh 'sudo apt install -y openjdk-17-jdk'
             }
         }
@@ -50,10 +50,10 @@ pipeline {
                 sh 'nohup mvn spring-boot:run &'
                 sleep(time: 15, unit: 'SECONDS') // Wait for the application to fully start
 
-                // Display the IP address and access URL of the application
+                // Fetch the public IP and display the access URL
                 script {
-                    def ipAddress = sh(script: "hostname -I | awk '{print \$1}'", returnStdout: true).trim()
-                    echo "The application is running and accessible at: http://${ipAddress}:8081"
+                    def publicIp = sh(script: "curl -s https://checkip.amazonaws.com", returnStdout: true).trim()
+                    echo "The application is running and accessible at: http://${publicIp}:8080"
                 }
             }
         }
@@ -77,7 +77,7 @@ pipeline {
         stage('Wait for 5 minutes') {
             steps {
                 echo 'Waiting for 5 minutes...'
-                sleep(time: 5, unit: 'MINUTES')  // Wait for 5 minutes
+                sleep(time: 1, unit: 'MINUTES')  // Wait for 5 minutes
             }
         }
 
@@ -93,6 +93,7 @@ pipeline {
         always {
             echo 'Cleaning up...'
             // Any cleanup steps, like stopping the app or cleaning up the environment
+            sh 'pkill -f "mvn spring-boot:run" || true' // Ensure the app is stopped
         }
     }
 }
